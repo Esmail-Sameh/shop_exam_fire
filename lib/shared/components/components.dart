@@ -111,10 +111,11 @@ void navigatTo(BuildContext context, String routName) =>
 Widget defaultButton({
   required void Function()? onPressed,
   required String text,
+  double width = double.infinity,
 }) =>
     Container(
-      height: 55,
-      width: double.infinity,
+      height: 50,
+      width: width ,
       decoration: BoxDecoration(
         color: Colors.blue,
         borderRadius: BorderRadius.circular(8),
@@ -153,6 +154,7 @@ void showToast({
 
 //enum toast color
 enum ToastState { SUCCESS, ERROR, WARNING }
+
 
 Color chooseToastColor(ToastState state) {
   Color color;

@@ -1,8 +1,11 @@
+import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shop_exam/layout/home_layout.dart';
 import 'package:shop_exam/modules/login/cubit/login_cubit.dart';
 import 'package:shop_exam/modules/login/cubit/login_states.dart';
 import 'package:shop_exam/shared/components/components.dart';
+import 'package:shop_exam/shared/network/local/cache_helper.dart';
 
 import '../register/register_screen.dart';
 
@@ -20,6 +23,14 @@ class LoginScreen extends StatelessWidget {
         listener: (context, state) {
           if (state is LoginErrorStates) {
             showToast(text: state.error, state: ToastState.ERROR);
+          }
+          if(state is LoginSuccessStates){
+            CacheHelper.savaData(
+                key: 'uId',
+                value: state.uId
+            ).then((value){
+              navigatAndRemove(context, HomeLayout.routName);
+            });
           }
         },
         builder: (context, state) {
@@ -98,34 +109,24 @@ class LoginScreen extends StatelessWidget {
                     SizedBox(
                       height: 10,
                     ),
-                    GestureDetector(
-                      onTap: () {
-                        if (formKey.currentState!.validate()) {
-                          print('btn Login');
-                          cubit.userLogin(
-                            email: emailController.text,
-                            password: passwordController.text,
-                          );
-                        }
-                      },
-                      child: Container(
-                        height: 50,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: Colors.blue,
-                          borderRadius: BorderRadius.circular(5),
+                    ConditionalBuilder(
+                        condition: state is! LoginLodingStates,
+                        builder: (context) =>  defaultButton(
+                          onPressed: (){
+                            if (formKey.currentState!.validate()) {
+                              print('btn Login');
+                              cubit.userLogin(
+                                email: emailController.text,
+                                password: passwordController.text,
+                              );
+                            }
+                          },
+                          text: 'Login',
                         ),
-                        child: Center(
-                          child: Text(
-                            'Login',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      ),
+                        fallback: (context) => Center(child: CircularProgressIndicator()),
                     ),
+
+                   SizedBox(height: 10,),
                     SizedBox(
                       height: 10,
                     ),

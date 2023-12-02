@@ -1,6 +1,8 @@
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shop_exam/layout/home_layout.dart';
+import 'package:shop_exam/modules/login/login_screen.dart';
 import 'package:shop_exam/modules/register/cubit/register_cubit.dart';
 import '../../shared/components/components.dart';
 import 'cubit/register_states.dart';
@@ -19,23 +21,12 @@ class RegisterScreen extends StatelessWidget {
       create: (context) => RegisterCubit(),
       child: BlocConsumer<RegisterCubit , RegisterStates>(
         listener: (context, state) {
-          // if (state is RegisterSuccessStates) {
-          //   if (state.RegisterModel.status == true) {
-          //     CacheHelper.saveData(
-          //         key: 'token', value: state.RegisterModel.data!.token)
-          //         .then((value) {
-          //       token = state.RegisterModel.data!.token;
-          //       navigatAndRemove(context, LoginScreen.routName);
-          //     });
-          //     showToast(
-          //         text: '${state.RegisterModel.message}',
-          //         state: ToastState.SUCCESS);
-          //   } else {
-          //     showToast(
-          //         text: '${state.RegisterModel.message}',
-          //         state: ToastState.ERROR);
-          //   }
-          // }
+          if(state is RegisterCreateSuccessStates){
+            navigatAndRemove(context, LoginScreen.routName);
+          }
+          if(state is RegisterErrorStates){
+            showToast(text: state.error, state: ToastState.ERROR);
+          }
         },
         builder: (context, state) {
           return Scaffold(
